@@ -21,57 +21,68 @@ int main() {
     // 游戏主循环
     while (true) {
         // 双缓冲绘图
-        if (isVictory)
-        {
-            victory_draw(&game);
-			//system("pause"); // 等待用户按任意键
-            continue;
-        }
         BeginBatchDraw();
         cleardevice();
-
-
-        if (inMenu) {
-            // 菜单状态
-            Menu_Draw();
-            Handle_Input_Menu();
-
-            // 检查是否要退出菜单
-            if (!Is_Menu_Active()) {
-                inMenu = false;
-                // 可以在这里添加游戏开始的音效
-            }
+        if (isVictory)
+        {
+            Handle_Input_Victory(&game);
+			//system("pause"); // 等待用户按任意键
+            //Sleep(1000);
         }
-        else {
-            // 游戏状态
-            game_update(&game);
-            game_draw(&game);
+        else
+        {
+            if (inMenu) {
+                // 菜单状态
+                Handle_Input_Menu();
 
-			//调用音乐函数
-			musicOn = true; // 确保音乐开启
-            Music();
-			playSoundEffect();
-            // 检查ESC键退出
-            if (GetAsyncKeyState(VK_ESCAPE) /*& 0x8000*/) {
-				//inMenu = true;
-                break;
+                // 检查是否要退出菜单
+                if (!Is_Menu_Active()) {
+                    inMenu = false;
+                    // 可以在这里添加游戏开始的音效
+                }
+            }
+            else {
+                // 游戏状态
+                game_update(&game);
+                game_draw(&game);
+
+                //检查是否回到菜单
+       //         if(Is_Menu_Active()) {
+       //             inMenu = true;
+       //             //closeMusic(); // 关闭音乐
+       //             //Activate_Menu(); // 激活菜单
+				   // inMenu = true; // 确保菜单状态
+				   // game_init(&game); // 重新初始化游戏
+       //             continue; // 跳过当前循环，重新绘制菜单
+			    //}
+			    //调用音乐函数
+			    musicOn = true; // 确保音乐开启
+                Music();
+			    playSoundEffect();
+                // 检查ESC键退出
+                if (GetAsyncKeyState(VK_ESCAPE) /*& 0x8000*/) {
+				    //inMenu = true;
+                    break;
+                }
+
+                //检查游戏是否结束
+                if (check_game_over(&game))
+                {
+				    isVictory = true; // 设置胜利状态
+                }
+
+                // 检查P键暂停（返回菜单）
+                if (GetAsyncKeyState('P') /*& 0x8000*/) {
+                    inMenu = true;
+                    closeMusic();
+                    Activate_Menu();
+                    // 添加暂停音效
+                    Sleep(200); // 防止连续检测
+                }
             }
 
-            //检查游戏是否结束
-            if (check_game_over(&game))
-            {
-				isVictory = true; // 设置胜利状态
-            }
-
-            // 检查P键暂停（返回菜单）
-            if (GetAsyncKeyState('P') /*& 0x8000*/) {
-                inMenu = true;
-                closeMusic();
-                Activate_Menu();
-                // 添加暂停音效
-                Sleep(200); // 防止连续检测
-            }
         }
+
 
         EndBatchDraw();
         Sleep(10);  // 控制游戏速度

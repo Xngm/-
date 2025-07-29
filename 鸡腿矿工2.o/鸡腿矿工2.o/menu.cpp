@@ -32,18 +32,27 @@ void Menu_Draw() {
     /*int titleWidth = textwidth(title);
     outtextxy((menu.width - titleWidth) / 2, 100, title);*/
 
-    // 绘制按任意键提示（闪烁效果）
-    DWORD currentTime = GetTickCount();
-    int blinkState = ((currentTime - menu.start_time) / 500) % 2; // 每500ms切换一次
+    //// 绘制按任意键提示（闪烁效果）
+    //DWORD currentTime = GetTickCount();
+    //int blinkState = ((currentTime - menu.start_time) / 500) % 2; // 每500ms切换一次
 
-    if (blinkState == 0) {
-        settextstyle(36, 0, _T("楷体"));
-        settextcolor(BLUE);
+    //if (blinkState == 0) {
+    //    settextstyle(36, 0, _T("楷体"));
+    //    settextcolor(BLUE);
 
-        const wchar_t* prompt = L"按任意键开始游戏";
-        int promptWidth = textwidth(prompt);
-        outtextxy((menu.width - promptWidth) / 2, menu.height - 150, prompt);
-    }
+    //    const wchar_t* prompt = L"按任意键开始游戏";
+    //    int promptWidth = textwidth(prompt);
+    //    outtextxy((menu.width - promptWidth) / 2, menu.height - 150, prompt);
+    //}
+
+
+    ////打印开始游戏按键
+    //settextstyle(36, 0, _T("楷体"));
+    //settextcolor(BROWN);
+
+    //const wchar_t* prompt = L"开始游戏";
+    //int promptWidth = textwidth(prompt);
+    //outtextxy((menu.width - promptWidth) / 2, menu.height - 230, prompt);
 
     // 绘制操作说明
     settextstyle(24, 0, _T("宋体"));
@@ -68,33 +77,65 @@ void Menu_Draw() {
 
 
 void Handle_Input_Menu() {
-    // 只检查可打印字符键和常用功能键
-    const int keysToCheck[] = {
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        VK_SPACE, VK_RETURN, VK_ESCAPE, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT
-    };
+    //// 只检查可打印字符键和常用功能键
+    //const int keysToCheck[] = {
+    //    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    //    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    //    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    //    VK_SPACE, VK_RETURN, VK_ESCAPE, VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT
+    //};
 
-    const int keyCount = sizeof(keysToCheck) / sizeof(keysToCheck[0]);
+    //const int keyCount = sizeof(keysToCheck) / sizeof(keysToCheck[0]);
 
-    for (int i = 0; i < keyCount; i++) {
-        int key = keysToCheck[i];
-        // 检查按键是否被按下
-        if (GetAsyncKeyState(key) & 0x8000) {
-            // 等待按键释放
-            while (GetAsyncKeyState(key) & 0x8000) {
-                Sleep(10);
-            }
+    //for (int i = 0; i < keyCount; i++) {
+    //    int key = keysToCheck[i];
+    //    // 检查按键是否被按下
+    //    if (GetAsyncKeyState(key) & 0x8000) {
+    //        // 等待按键释放
+    //        while (GetAsyncKeyState(key) & 0x8000) {
+    //            Sleep(10);
+    //        }
 
-            // 清空键盘缓冲区
-            while (_kbhit()) _getch();
+    //        // 清空键盘缓冲区
+    //        while (_kbhit()) _getch();
 
-            printf("检测到有效按键: %d\n", key);
+    //        printf("检测到有效按键: %d\n", key);
+    //        Deactivate_Menu();
+    //        return;
+    //    }
+    //}
+    
+
+    //绘制菜单界面
+    Menu_Draw();
+
+    //处理鼠标信息
+    MOUSEMSG msg=GetMouseMsg();
+    //printf("%d %d\n", msg.x, msg.y);
+
+    //鼠标悬浮开始游戏上时给予反馈（放大字体）
+    if (msg.x > 470 && msg.x < 610 && msg.y>415 && msg.y < 445)
+    {
+        settextstyle(40, 0, _T("楷体"));
+        settextcolor(BROWN);
+        if (msg.uMsg == WM_LBUTTONDOWN)
+        {
+            //printf("鼠标左键点击了开始游戏按钮\n");
             Deactivate_Menu();
-            return;
         }
     }
+    else
+    {
+        settextstyle(36, 0, _T("楷体"));
+        settextcolor(BROWN);
+
+    }
+    //打印开始游戏按键
+
+    const wchar_t* prompt = L"开始游戏";
+    int promptWidth = textwidth(prompt);
+    outtextxy((menu.width - promptWidth) / 2, menu.height - 230, prompt);
+    
 }
 bool Is_Menu_Active() {
     return menu.state == MENU_ACTIVE;

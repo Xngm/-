@@ -4,6 +4,7 @@
 #include <time.h>
 #include <Windows.h>
 #include"settings.h"
+#include"Menu.h"
 //#include"menu.h"
 //void drawImage(int x, int y, const IMAGE* img) {
 //    putimage(x, y, img);
@@ -150,4 +151,35 @@ void victory_draw(const Game *game) {
     putimage(0, 0, &game->victoryImage);
 	//printf("打印胜利画面\n");
     // 停止音乐
+}
+
+void Handle_Input_Victory(const Game* game)
+{
+    //打印胜利界面
+    victory_draw(game);
+    //鼠标信息
+	MOUSEMSG msg = GetMouseMsg();
+    // 鼠标悬浮退出游戏上时给予反馈（放大字体）
+	//printf("%d %d\n", msg.x, msg.y);
+    if (msg.x > 470 && msg.x < 610 && msg.y > 415 && msg.y < 445) {
+        settextstyle(46, 0, _T("楷体"));
+        settextcolor(BROWN);
+        //printf("准备退出游戏");
+        if(msg.uMsg == WM_LBUTTONDOWN) {
+            exit(0); // 退出游戏
+			//isVictory= false; // 重置胜利状态
+            //Activate_Menu();
+		}
+    }
+    else {
+        settextstyle(36, 0, _T("楷体"));
+        settextcolor(BROWN);
+    }
+
+    // 绘制退出游戏按钮
+    const wchar_t* prompt = L"退出游戏";
+    int promptWidth = textwidth(prompt);
+    outtextxy((SCREEN_WIDTH - promptWidth) / 2, SCREEN_HEIGHT - 230, prompt);
+   
+
 }

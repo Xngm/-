@@ -22,3 +22,4 @@ bool check_game_over(const Game* game);
 //void handle_Menu(const Game* game);
 void victory_music();
 void victory_draw(const Game *game);
+void Handle_Input_Victory(const Game* game);

@@ -69,8 +69,8 @@ bool check_collision(const Hook* hook, const Mine* mine) {
 void hook_control(Hook* hook, Mine mines[], int mineCount) {
     // 钩子移动速度
     float speed = hook->speed;
-
-    if (hook->state == Normal && GetAsyncKeyState(VK_SPACE) /*& 0x8000*/) {
+	//MOUSEMSG msg = GetMouseMsg();
+    if (hook->state == Normal && GetAsyncKeyState(VK_SPACE) /*& 0x8000*//*||msg.uMsg== WM_LBUTTONDOWN*/) {
         hook->state = Long;
         hook->speed = FAST; // 默认快速
     }
